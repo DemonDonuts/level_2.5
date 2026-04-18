@@ -15,6 +15,7 @@ ball.vx = 4;
 ball.vy = 4;
 
 
+
 // console.log(document.getElementById("canvas"));
 
 // player line thijngy shows
@@ -23,7 +24,7 @@ player1.y = canvas.height / 2 - 50;
 player1.width = 20;
 player1.height = 100;
 player1.color = "blue";
-player1.speed = 3;
+player1.speed = 4;
 
 
 // makes sure that when player presses a key, the system knows (dyslexia)
@@ -44,48 +45,34 @@ function animate()
 {
     context.clearRect(0, 0, canvas.width, canvas.height);
 
-    //YAY THE BALL WORKS  BUUUTTTT it doesnt hit the slider
+    //YAY THE BALL WORKS  BUUUTTTT it doesnt hit the slider // goes through it 
     
     // ball movement 
     ball.x += ball.vx; // keep messing up with putting x instead of v
     ball.y += ball.vy;
 
 
-    // // i put 2, thats why it brookkkkeeee ughhhh
-    // ball.x += ball.vx; 
-    // ball.y += ball.vy;
-
-    // bounce off walls
-    if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) 
-    {
-        ball.vx *= -1;
-    }
-
-    if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) 
+    //top bounding
+    if (ball.y - ball.radius < 0)
     {
         ball.vy *= -1;
+        ball.y = ball.radius;
     }
 
+    //bottom bounding
+    if (ball.y + ball.radius > canvas.height)
+    {
+        ball.vy *= -1;
+        ball.y = canvas.height - ball.radius;
+    }
 
+    //right bounding
+    if (ball.x + ball.radius > canvas.width)
+    {
+        ball.vx *= -1;
+        ball.x = canvas.width - ball.radius;
+    }
 
-
-
-    // this entire line of code is broken for some reason.
-// ===================
-    // if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0)
-    // {
-    //    // ball.vx = -ball.vx; // messed up, put xy instead and didn't show on canvas
-
-    //    // ball.vx = *= -1; this breaks?????
-    // }
-
-    // if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0)
-    // {
-    //    //  ball.xy = -ball.vy; // same with this one too. xy insead of vy
-       
-    //    // ball.vy = *= -1;  
-    // }
-// ===================
 
 
     //keys up and down for player
@@ -109,6 +96,21 @@ function animate()
     {
         player1.y = canvas.height - player1.height;
     }
+
+
+    //paddle collison but front only
+    if (
+    ball.x - ball.radius < player1.right() && 
+    ball.x > player1.x &&
+    ball.y + ball.radius > player1.top() &&
+    ball.y - ball.radius < player1.bottom() &&
+    ball.vx < 0 
+    ) 
+    {
+    ball.vx *= -1;
+
+    ball.x = player1.right() + ball.radius;
+    }   
 
     player1.drawRect(context);
     ball.drawCircle(context); 
